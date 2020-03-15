@@ -61,3 +61,19 @@ resource "aws_route" "private_route" {
   nat_gateway_id            = aws_nat_gateway.gw.id
   depends_on                = [aws_nat_gateway.gw]
 }
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7kyzmKjjV+J7OTULE7G1JcJOaF4iwNqWhCEXl7h7600w6jtNPi1COJdM4dZX+Hdxkr92mqGgbjX4N3ZXFvN51MpGIca+f9Bvz6D6ggnJWRl5j/8L+iBhSUnUrL8EP8iXWMyhopff2INzykNJkECjUg6ChbwGs2DapwtviCp0IHIFpenw7uvpCfyXcgl7bVWUao35Zc2zc5n7TQ3fXFN254dOfANU3ukR2824IKkjO1rEbLdPw/7k/3l2C3FsbuK0bw43ffm1QRfAcSUstxNOkeWqbAQqEGxL0m136IfeoQcHLlH8hQLb0aQaKvijKpCmEpc8eEUh5lVYNF96Gkst7 ahmad@Ahmads-MacBook-Pro.local"
+}
+
+module "bastion_instance" {
+  source                      = "./modules/ec2"
+  ec2_name                    = "bastion"
+  ami_id                      = var.ami_id
+  instance_type               = var.bastion_type
+  az                          = module.public_subnet.az
+  subnet_id                   = module.public_subnet.subnet_id
+  key_name                    = "deployer-key"
+  security_groups             = [aws_security_group.bastion.id]
+  associate_public_ip_address = true
+}

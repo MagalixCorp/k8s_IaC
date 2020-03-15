@@ -14,3 +14,5 @@ variable "private_subnet_name" {}
 variable "public_subnet_name" {}
 variable "igw_name" {}
 variable "ngw_name" {}
+variable "bastion_type" {}
+variable "ami_id" {}

@@ -8,3 +8,9 @@ variable "security_groups" {
 }
 variable "associate_public_ip_address" {}
 variable "subnet_id" {}
+variable "user_data" {
+    default = ""
+}
+variable "private_ip" {
+    default = ""
+}

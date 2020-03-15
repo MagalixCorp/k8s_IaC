@@ -16,3 +16,6 @@ variable "igw_name" {}
 variable "ngw_name" {}
 variable "bastion_type" {}
 variable "ami_id" {}
+variable "k8s_ami_id" {}
+variable "master_type" {}
+variable "master_private_ip" {}

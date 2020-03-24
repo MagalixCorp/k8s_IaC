@@ -81,17 +81,21 @@ module "k8s_master_instance" {
   source                      = "./modules/ec2"
   ec2_name                    = "master"
   ami_id                      = var.k8s_ami_id
-  instance_type               = var.master_type
+  instance_type               = var.node_type
   az                          = module.private_subnet.az
   subnet_id                   = module.private_subnet.subnet_id
   key_name                    = "deployer-key"
   security_groups             = [aws_security_group.k8s.id]
   associate_public_ip_address = false
-  private_ip                  = var.master_private_ip
-  user_data                   = <<EOF
-                                #!/bin/bash
-                                sudo hostnamectl set-hostname $(curl -s http://169.254.169.254/latest/meta-data/hostname)
-                                printf "[Service]\nEnvironment=\"KUBELET_EXTRA_ARGS=--cloud-provider=aws --node-ip=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)\"" | sudo tee /etc/systemd/system/kubelet.service.d/20-aws.conf
-                                sudo systemctl daemon-reload && sudo systemctl restart kubelet
-EOF
+}
+module "k8s_worker_instance" {
+  source                      = "./modules/ec2"
+  ec2_name                    = "worker"
+  ami_id                      = var.k8s_ami_id
+  instance_type               = var.node_type
+  az                          = module.private_subnet.az
+  subnet_id                   = module.private_subnet.subnet_id
+  key_name                    = "deployer-key"
+  security_groups             = [aws_security_group.k8s.id]
+  associate_public_ip_address = false
 }
